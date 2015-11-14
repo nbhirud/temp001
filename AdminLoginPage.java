@@ -215,8 +215,8 @@ public void close(){
     private void LoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LoginActionPerformed
         // TODO add your handling code here:
            mycon=MySql.ConnectDB();
-        String sql="select * from login where username=? and password=? ";
-        try{
+       String sql="select * from login where username=? and password=? ";
+       try{
            pst=mycon.prepareStatement(sql);
           pst.setString(1,txtusername.getText());
           pst.setString(2,txtpassword.getText());
@@ -236,7 +236,7 @@ public void close(){
         }
         catch(SQLException | HeadlessException e){
               JOptionPane.showMessageDialog(null, e);
-        }
+        }  
     }//GEN-LAST:event_LoginActionPerformed
 
     private void CancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CancelActionPerformed
@@ -297,7 +297,7 @@ public void close(){
                 new AdminLoginPage().setVisible(true);
             }
         });
-    }
+    } 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Back;
