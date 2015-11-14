@@ -202,7 +202,7 @@ wa.setVisible(true);
                 }
             }
         });
-    }
+    } 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel MENU;
