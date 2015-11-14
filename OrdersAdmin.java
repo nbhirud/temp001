@@ -10,7 +10,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import net.proteanit.sql.DbUtils;
-
+ 
 
 public final class OrdersAdmin extends javax.swing.JFrame {
     Connection mycon=null;
