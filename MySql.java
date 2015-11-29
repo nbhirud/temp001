@@ -8,8 +8,8 @@ public static Connection ConnectDB(){
         try{
              Class.forName("com.mysql.jdbc.Driver"); // setting the driver
        
-                Connection mycon = DriverManager.getConnection("jdbc:mysql://localhost/project", "root","circus465");
-               // JOptionPane.showMessageDialog(null,"connected to database");
+                Connection mycon = DriverManager.getConnection("jdbc:mysql://localhost/ssdi_ras_v001", "root","circus465");
+               
                 return mycon;
         }
         catch(ClassNotFoundException | SQLException e){
