@@ -21,7 +21,7 @@ ResultSet rs=null;
     }
   public void Orders_table() throws SQLException{
        try {
-           String sql="Select * from orders ";
+           String sql="select o.table_id as Table_Number,  o.ostatus as Order_Status, concat(fname, lname) as Customer_Name, o.total_payable as Total_Payable from customer c inner join orders o inner join order_list ol on o.order_id = ol.order_id and c.cid = o.cid where o.ostatus = 'Processing'";
            pst=mycon.prepareStatement(sql);
            rs=pst.executeQuery();
           Orders_table.setModel(DbUtils.resultSetToTableModel(rs));
