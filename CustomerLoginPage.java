@@ -192,13 +192,13 @@ public void close(){
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGap(0, 345, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 20, Short.MAX_VALUE))
+                .addGap(0, 343, Short.MAX_VALUE))
         );
 
         pack();
@@ -217,12 +217,15 @@ public void close(){
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
+        close();
+        CustomerLoginPage alp =new CustomerLoginPage();
+        alp.setVisible(true);
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void loginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginActionPerformed
         // TODO add your handling code here:
            mycon=MySql.ConnectDB();
-        String sql="select username,password from customerregister where username=? and password=? ";
+        String sql="select cid,email,pwd from customer where email=? and pwd=?";
         try{
            pst=mycon.prepareStatement(sql);
           pst.setString(1,txtusername.getText());
@@ -234,7 +237,7 @@ public void close(){
             }
             else
             {
-             
+              JOptionPane.showMessageDialog(null,"Login Successful");
                 close();
                 WelcomeCustomer w=new WelcomeCustomer();
                 w.setVisible(true);
