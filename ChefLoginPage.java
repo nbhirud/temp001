@@ -200,7 +200,9 @@ public void close(){
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
+close();
+        ChefLoginPage alp =new ChefLoginPage();
+        alp.setVisible(true);        // TODO add your handling code here:
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void loginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginActionPerformed
@@ -218,7 +220,7 @@ public void close(){
             }
             else
             {
-                //JOptionPane.showMessageDialog(null,"welcome adminstrator");
+               JOptionPane.showMessageDialog(null,"Login Successfull");
                 close();
                 Welcome w=new Welcome();
                 w.setVisible(true);
