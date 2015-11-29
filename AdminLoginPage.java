@@ -297,7 +297,7 @@ public void close(){
                 new AdminLoginPage().setVisible(true);
             }
         });
-    } 
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Back;
