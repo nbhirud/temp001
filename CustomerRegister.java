@@ -1,4 +1,8 @@
-
+import java.util.Properties;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.*;
 import java.awt.HeadlessException;
 import java.awt.Toolkit;
 import java.awt.event.WindowEvent;
@@ -6,18 +10,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import javax.swing.JOptionPane;
-
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/**
- *
- * @author revanth
- */
 public class CustomerRegister extends javax.swing.JFrame {
     Connection mycon=null;
 PreparedStatement pst=null;
@@ -32,6 +27,61 @@ ResultSet rs=null;
 public void close(){
     WindowEvent winClosingEvent = new WindowEvent(this,WindowEvent.WINDOW_CLOSING);
     Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(winClosingEvent);
+}
+public void insert(){
+     String sql="insert into customer(fname,lname,pwd,mobile,email) values(?,?,?,?,?)";
+          try{
+           pst=mycon.prepareStatement(sql);
+          pst.setString(1,txt_first_name.getText());
+          pst.setString(2,txt_last_name.getText());
+          pst.setString(3,txtpassword.getText());
+            pst.setString(4,txtmobile_number.getText());
+          pst.setString(5,txtemail_id.getText());  
+          
+        int r=pst.executeUpdate();
+        if(r>0){
+              JOptionPane.showMessageDialog(null,"Registration successful");
+              CustomerLoginPage cl=new CustomerLoginPage();
+              cl.setVisible(true);
+        }
+        else{
+          JOptionPane.showMessageDialog(null,"registeration unsuccessful","Access Denied",JOptionPane.ERROR_MESSAGE);
+          }
+          }
+          catch(SQLException | HeadlessException e){
+       
+            JOptionPane.showMessageDialog(null, e);
+        }
+          Properties mail=new Properties();
+mail.put("mail.smtp.host", "smtp.gmail.com");
+mail.put("mail.smtp.socketFactory.port", "465");
+mail.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+mail.put("mail.smtp.auth","true");
+mail.put("mail.smtp.port","465");
+
+
+Session session=Session.getDefaultInstance(mail,
+new javax.mail.Authenticator()   {
+protected PasswordAuthentication getPasswordAuthentication() {
+return new PasswordAuthentication("ras1.team10@gmail.com","ras.team");
+}
+}
+);  
+try{
+    String mail_id= txtemail_id.getText();
+    
+Message message=new MimeMessage(session);
+message.setFrom(new InternetAddress("RAS@gmail.com"));
+message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(mail_id));
+message.setSubject("Do not reply @RAS Admin");
+message.setText(" Welcome Customer. Username :- "+txtemail_id.getText()+" , Password="+txtpassword.getText()+". Thanks for registration. Enjoy your food");
+Transport.send(message);
+JOptionPane.showMessageDialog(null, "Mail has been sent to the user mail_id");
+}
+catch(       MessagingException | HeadlessException e) {
+
+JOptionPane.showMessageDialog(null,e);
+}
 }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -49,7 +99,7 @@ public void close(){
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        txtusername = new javax.swing.JTextField();
+        txt_first_name = new javax.swing.JTextField();
         txtmobile_number = new javax.swing.JTextField();
         txtemail_id = new javax.swing.JTextField();
         submit = new javax.swing.JButton();
@@ -57,6 +107,10 @@ public void close(){
         cancel = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        txt_confirm_password = new javax.swing.JPasswordField();
+        jLabel8 = new javax.swing.JLabel();
+        txt_last_name = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -80,7 +134,7 @@ public void close(){
         });
 
         jLabel2.setFont(new java.awt.Font("Times New Roman", 3, 18)); // NOI18N
-        jLabel2.setText("User Name");
+        jLabel2.setText("First Name");
 
         jLabel3.setFont(new java.awt.Font("Times New Roman", 3, 18)); // NOI18N
         jLabel3.setText("Password");
@@ -91,10 +145,10 @@ public void close(){
         jLabel5.setFont(new java.awt.Font("Times New Roman", 3, 18)); // NOI18N
         jLabel5.setText("mobile_number");
 
-        txtusername.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
-        txtusername.addActionListener(new java.awt.event.ActionListener() {
+        txt_first_name.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
+        txt_first_name.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtusernameActionPerformed(evt);
+                txt_first_nameActionPerformed(evt);
             }
         });
 
@@ -132,7 +186,18 @@ public void close(){
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/welcome.png"))); // NOI18N
 
-        jLabel6.setIcon(new javax.swing.ImageIcon("C:\\Users\\revanth\\Desktop\\register_now_blue_sign.jpg")); // NOI18N
+        jLabel7.setFont(new java.awt.Font("Times New Roman", 3, 18)); // NOI18N
+        jLabel7.setText("Confirm Password");
+
+        jLabel8.setFont(new java.awt.Font("Times New Roman", 3, 18)); // NOI18N
+        jLabel8.setText("Last Name");
+
+        txt_last_name.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
+        txt_last_name.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txt_last_nameActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -141,46 +206,49 @@ public void close(){
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(41, 41, 41)
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 417, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(36, 36, 36)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(txtemail_id, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                        .addComponent(jLabel5)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(txtmobile_number, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(txtpassword, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(55, 55, 55)
-                                        .addComponent(txtusername, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(100, 100, 100)
-                                .addComponent(submit, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(80, 80, 80)
-                                .addComponent(cancel, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addGroup(layout.createSequentialGroup()
                         .addGap(396, 396, 396)
                         .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 463, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(512, 512, 512)
                         .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(481, Short.MAX_VALUE))
+                .addContainerGap(805, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
-                .addGap(243, 243, 243)
-                .addComponent(backtologin, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGap(26, 26, 26)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel1)
+                    .addComponent(backtologin, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(txtpassword, javax.swing.GroupLayout.DEFAULT_SIZE, 225, Short.MAX_VALUE)
+                                        .addComponent(txt_first_name)
+                                        .addComponent(txt_last_name, javax.swing.GroupLayout.Alignment.TRAILING)))
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jLabel5)
+                                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jLabel7))
+                                    .addGap(16, 16, 16)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(txt_confirm_password, javax.swing.GroupLayout.DEFAULT_SIZE, 225, Short.MAX_VALUE)
+                                        .addComponent(txtmobile_number)
+                                        .addComponent(txtemail_id))))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(submit, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(80, 80, 80)
+                                .addComponent(cancel, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 417, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -193,52 +261,55 @@ public void close(){
                 .addComponent(backtologin, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(52, 52, 52)
+                        .addGap(41, 41, 41)
+                        .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 407, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(16, 16, 16)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtusername, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txt_first_name, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txt_last_name, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(30, 30, 30)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                            .addComponent(txtpassword, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addGap(46, 46, 46)
-                                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(txtmobile_number, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(51, 51, 51)
+                                .addGap(25, 25, 25)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(txtpassword, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(149, 149, 149)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txtemail_id, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(26, 26, 26)
-                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 188, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(70, 70, 70)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(cancel, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(submit, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 407, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(419, Short.MAX_VALUE))
+                                    .addComponent(txtemail_id, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(50, 50, 50)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(cancel, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(submit, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(txt_confirm_password, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGap(38, 38, 38)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(txtmobile_number, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 188, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addContainerGap(389, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void backtologinActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backtologinActionPerformed
-        // TODO add your handling code here:
-        
-        CustomerLoginPage clp1=new CustomerLoginPage();
-        clp1.setVisible(true);
-               
+CustomerLoginPage clp1=new CustomerLoginPage();
+clp1.setVisible(true);          
     }//GEN-LAST:event_backtologinActionPerformed
 
-    private void txtusernameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtusernameActionPerformed
+    private void txt_first_nameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_first_nameActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_txtusernameActionPerformed
+    }//GEN-LAST:event_txt_first_nameActionPerformed
 
     private void txtmobile_numberActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtmobile_numberActionPerformed
         // TODO add your handling code here:
@@ -249,34 +320,33 @@ public void close(){
     }//GEN-LAST:event_txtemail_idActionPerformed
 
     private void submitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submitActionPerformed
-        // TODO add your handling code here:
+     
          mycon=MySql.ConnectDB();
-          String sql="insert into customerregister values(?,?,?,?)";
-          try{
-           pst=mycon.prepareStatement(sql);
-          pst.setString(1,txtusername.getText());
-          pst.setString(2,txtpassword.getText());
-          pst.setString(3,txtmobile_number.getText());
-          pst.setString(4,txtemail_id.getText());  
-          int r=pst.executeUpdate();
-          if(r>0){
-              JOptionPane.showMessageDialog(null,"Registration successful");
-              CustomerLoginPage cl=new CustomerLoginPage();
-              cl.setVisible(true);
-          }
+         try{
+              String cpwd=txt_confirm_password.getText();
+          String fpwd=txtpassword.getText();
+          if( fpwd == null ? cpwd == null : fpwd.equals(cpwd)){
+                  JOptionPane.showMessageDialog(null, "Confirm Password matches with Password");
+                  insert();
+         }
           else{
-          JOptionPane.showMessageDialog(null,"registeration unsuccessful","Access Denied",JOptionPane.ERROR_MESSAGE);
+              JOptionPane.showMessageDialog(null,"Type the password and confirm password again","Access Denied",JOptionPane.ERROR_MESSAGE);
           }
-          }
-          catch(SQLException | HeadlessException e){
-       
-            JOptionPane.showMessageDialog(null, e);
-        }
+         }
+         catch(Exception e){
+             JOptionPane.showMessageDialog(null, e);
+         }
+     
+         
     }//GEN-LAST:event_submitActionPerformed
 
     private void cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_cancelActionPerformed
+
+    private void txt_last_nameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_last_nameActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txt_last_nameActionPerformed
 
     /**
      * @param args the command line arguments
@@ -322,12 +392,16 @@ public void close(){
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField3;
     private javax.swing.JButton submit;
+    private javax.swing.JPasswordField txt_confirm_password;
+    private javax.swing.JTextField txt_first_name;
+    private javax.swing.JTextField txt_last_name;
     private javax.swing.JTextField txtemail_id;
     private javax.swing.JTextField txtmobile_number;
     private javax.swing.JPasswordField txtpassword;
-    private javax.swing.JTextField txtusername;
     // End of variables declaration//GEN-END:variables
 }
